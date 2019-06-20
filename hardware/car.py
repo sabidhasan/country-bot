@@ -50,17 +50,26 @@ class Car(object):
     return move_success
 
   def go_straight(self):
-    """ Moves the car forward """
+    """
+      Moves the car forward; returns False is failure or tuple of current car 
+      sensors if successful (inputs are Ultrasonic and camera)
+    """
 
     return self.move_car('straight')
 
   def go_left(self):
-    """ Moves the car forward """
+    """
+      Moves the car forward; returns False is failure or tuple of current car 
+      sensors if successful (inputs are Ultrasonic and camera)
+    """
 
     return self.move_car('left')
 
   def go_right(self):
-    """ Moves the car right """
+    """
+      Moves the car right; returns False is failure or tuple of current car 
+      sensors if successful (inputs are Ultrasonic and camera)
+    """
 
     return self.move_car('right')
 
