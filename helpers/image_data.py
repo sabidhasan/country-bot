@@ -1,0 +1,2 @@
+class ImageData(object):
+  pass
