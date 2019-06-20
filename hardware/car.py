@@ -25,8 +25,7 @@ class Car(object):
     """ Returns whether car moved in the last two seconds """
 
     try:
-      print(self.moves_times, time.time(), abs(self.moves_times[-1] - time.time()))
-      return abs(self.moves_times[-1] - time.time()) <= self.engine.move_duration
+      return abs((self.moves_times[-1] + self.engine.move_duration) - time.time()) <= 2
     except IndexError:
       return False
 
@@ -44,6 +43,7 @@ class Car(object):
     try:
       move_success = directions[direction]()
       self.moves_times.append(time.time())
+      self.moves += 1
     except KeyError:
       # Illegal command was issued
       move_success = False
@@ -64,6 +64,10 @@ class Car(object):
 
     return self.move_car('right')
 
-  def get_sensors(self):
-    """ Returns """
-    return self.engine.get_sensors()
+  def get_image(self):
+    """ Returns a processed image from the car of type ImageData """
+    return self.process_image(self.engine.get_image())
+
+  @staticmethod
+  def process_image(image):
+    return image

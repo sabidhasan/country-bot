@@ -6,7 +6,6 @@ from hardware.car import Car
 class CarTests(unittest.TestCase):
     def setUp(self):
         engine = Mock(revolutions_per_move=2, move_duration=1)
-        engine.get_sensors =  MagicMock(return_value=[None, None])
         engine.go_straight = MagicMock(return_value=True)
         engine.go_left = MagicMock(return_value=True)
         engine.go_right = MagicMock(return_value=True)
@@ -20,8 +19,8 @@ class CarTests(unittest.TestCase):
 
     # responds to input - straight
     def test_go_straight(self):
-        move = self.car.go_straight()
-        self.assertEqual(move, True, 'go straight command did not work')
+        self.assertEqual(self.car.go_straight(), True,
+                        'go straight command did not work')
 
     # responds to input - left
     def test_go_left(self):
@@ -38,14 +37,14 @@ class CarTests(unittest.TestCase):
         self.assertEqual(self.car.currently_moving(), False,
                         'car is reported to be moving, when it should not be')
 
-    # Method for checking if car is currently moving
+    # Car moves when issued a go_straight command
     def test_currently_moving(self):
         self.car.go_straight()
         self.assertEqual(self.car.currently_moving(), True,
                         'car is reported to be moving, when it should not be')
 
-    # List all sensors on car
-    def test_list_all_sensors(self):
-        len_sensors = len(self.car.get_sensors())
-        self.assertEqual(len_sensors, 2,
-                        'incorrect number of sensors')
+    # Tests the process_image function
+    def test_get_image(self):
+        raw_img = self.car.engine.get_image()
+        processed_image = self.car.get_image()
+        self.assertNotEqual(raw_img, processed_image)
