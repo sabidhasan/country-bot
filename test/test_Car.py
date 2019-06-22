@@ -6,9 +6,9 @@ from hardware.car import Car
 class CarTests(unittest.TestCase):
     def setUp(self):
         engine = Mock(revolutions_per_move=2, move_duration=1)
-        engine.go_straight = MagicMock(return_value=(None, None))
-        engine.go_left = MagicMock(return_value=(None, None))
-        engine.go_right = MagicMock(return_value=(None, None))
+        engine.go_straight = MagicMock(return_value=True)
+        engine.go_left = MagicMock(return_value=True)
+        engine.go_right = MagicMock(return_value=True)
         seal(engine.go_straight)
         self.car = Car(engine)
 
@@ -19,17 +19,17 @@ class CarTests(unittest.TestCase):
 
     # responds to input - straight
     def test_go_straight(self):
-        self.assertIsInstance(self.car.go_straight(), tuple,
+        self.assertEqual(self.car.go_straight(), True,
                         'go straight command did not work')
 
     # responds to input - left
     def test_go_left(self):
-        self.assertIsInstance(self.car.go_left(), tuple,
+        self.assertEqual(self.car.go_left(), True,
                         'go left command did not work')
 
     # responds to input - right
     def test_go_right(self):
-        self.assertIsInstance(self.car.go_right(), tuple,
+        self.assertEqual(self.car.go_right(), True,
                         'go right command did not work')
     
     # Method for checking if car is currently moving
