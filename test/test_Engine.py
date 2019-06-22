@@ -1,19 +1,20 @@
-import os
 import unittest
-import time
-import sys
+import random
 import math
 from unittest.mock import Mock, MagicMock, call, patch
 from helpers.image_data import ImageData
+from helpers.os import set_environ
+from helpers.testing_tools import measure_time_for_fn, percent_error, get_activated_pin_ids_from_calls
 
-# Set environment variable to import correct files
-os.environ["country_bot_env"] = "TESTING"
+# Set testing environment so Engine imports fake RPi modules
+set_environ("TESTING")
 import hardware.engine as Engine
 
 
 def mock_gpio_input(RPi_pin_number):
-  """ The mock input function uses time to mock a pulse from ultrasonic sensor """
-  return int(round(time.time() * 100) % 100 == 33)
+  """ The mock input function randomly decides when it has it an object a pulse from ultrasonic sensor """
+  return random.random() > 0.9
+  # return int(round(time.time() * 100) % 100 == 33)
 
 def mock_gpio_infinite(RPi_pin_number):
   """ This RPi will never report the echo coming back, so should time out """
@@ -56,12 +57,12 @@ class EngineTests(unittest.TestCase):
       self.assertIsInstance(raw_image, ImageData,
                         'raw image returned is not of type ImageData')
     
-    # When issued a go_straight command the time taken has <1% error
+    # When issued a go_straight command the time taken has <20s% error
     def test_go_straight_time(self):
       measured_time = measure_time_for_fn(self.engine.go_straight)
       expected_time = self.engine.move_duration
       error = percent_error(measured_time, expected_time) 
-      self.assertLessEqual(error, .1,
+      self.assertLessEqual(error, .2,
                         'time taken to move straight is not as expected; percent error too high')
 
     # When issued a go_left command the time taken has <1% error
@@ -80,37 +81,29 @@ class EngineTests(unittest.TestCase):
       self.assertLessEqual(error, .1,
                         'time taken to move right is not as expected')
 
-    # When issued a go_straight command, RPi straight called
+    # When issued a go_straight command, RPi straight pin is activated
     @patch('hardware.engine.GPIO.output')
     def test_go_straight_command(self, mock_gpio):
-      print(mock_gpio)
+      expected_pins = [13]
       self.engine.go_straight()
-      mock_gpio.assert_called_with(131, 0,
-                        'forward command did not touch expected RPi pin')
-      
-    # # When issued a go_right command, RPi right + straight called
-    # def test_go_right_command(self):
-    #   self.engine.go_right()
-    #   self.assertTrue(RPi.GPIO.call_count == 2,
-    #                     'expected two pins to be activated, but only one was')
-    #   expected_calls = [call(13, 0), call(7, 0)]
-    #   self.assertTrue(RPi.GPIO.mock_calls == expected,
-    #                     'right command did not touch expected RPi pins')
+      # Get what pins were activated from calls to GPIO.output function
+      actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)
+      self.assertEqual(sorted(actual_activated_pins), sorted(expected_pins))
 
-    # # When issued a go_left command, RPi left + straight called
-    # def test_go_left_command(self):
-    #   self.engine.go_left()
-    #   self.assertTrue(RPi.GPIO.call_count == 2,
-    #                     'expected two pins to be activated, but only one was')
-    #   expected_calls = [call(13, 0), call(11, 0)]
-    #   self.assertTrue(RPi.GPIO.mock_calls == expected,
-    #                     'left command did not touch expected RPi pins')
+    # When issued a go_left command, RPi left + straight pins are activated
+    @patch('hardware.engine.GPIO.output')
+    def test_go_left_command(self, mock_gpio):
+      expected_pins = [11, 13]
+      self.engine.go_left()
+      # Get what pins were activated from calls to GPIO.output function
+      actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)
+      self.assertEqual(sorted(actual_activated_pins), sorted(expected_pins))
 
-def measure_time_for_fn(function):
-  start_time = time.time()
-  function()
-  end_time = time.time()
-  return end_time - start_time
-
-def percent_error(a, b):
-  return abs(a - b) / b
+    # When issued a go_right command, RPi right + straight called
+    @patch('hardware.engine.GPIO.output')
+    def test_go_right_command(self, mock_gpio):
+      expected_pins = [7, 13]
+      self.engine.go_right()
+      # Get what pins were activated from calls to GPIO.output function
+      actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)
+      self.assertEqual(sorted(actual_activated_pins), sorted(expected_pins))
