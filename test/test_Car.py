@@ -47,9 +47,3 @@ class CarTests(unittest.TestCase):
     def test_moves(self):
         self.car.go_left()
         self.assertEqual(self.car.moves, 1, 'car moves are not 1 when moved by 1')
-
-    # Tests the process_image function
-    def test_get_image(self):
-        raw_img = self.car.engine.get_image()
-        processed_image = self.car.get_image()
-        self.assertNotEqual(raw_img, processed_image)

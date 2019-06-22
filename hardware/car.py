@@ -75,8 +75,4 @@ class Car(object):
 
   def get_image(self):
     """ Returns a processed image from the car of type ImageData """
-    return self.process_image(self.engine.get_image())
-
-  @staticmethod
-  def process_image(image):
-    return image
+    return self.engine.get_image()
