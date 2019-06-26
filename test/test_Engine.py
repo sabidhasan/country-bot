@@ -4,7 +4,8 @@ import math
 from unittest.mock import Mock, MagicMock, call, patch
 from helpers.image_data import ImageData
 from helpers.os import set_environ
-from helpers.testing_tools import measure_time_for_fn, percent_error, get_activated_pin_ids_from_calls
+from helpers.testing_tools import measure_time_for_fn, percent_error, \
+  get_activated_pin_ids_from_calls
 
 # Set testing environment so Engine imports fake RPi modules
 set_environ("TESTING")
@@ -14,7 +15,6 @@ import hardware.engine as Engine
 def mock_gpio_input(RPi_pin_number):
   """ The mock input function randomly decides when it has it an object a pulse from ultrasonic sensor """
   return random.random() > 0.9
-  # return int(round(time.time() * 100) % 100 == 33)
 
 def mock_gpio_infinite(RPi_pin_number):
   """ This RPi will never report the echo coming back, so should time out """
