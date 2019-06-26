@@ -11,6 +11,7 @@ if os.environ.get('country_bot_env') == "TESTING":
 else:
   import RPi.GPIO as GPIO
   import picamera
+  import picamera.array
 
 class Engine(object):
   TRIG_PIN = 16
@@ -82,12 +83,17 @@ class Engine(object):
     """
       Acquires an image and returns it as ImageData
     """
-    stream = io.BytesIO()
+    if height < 64 or width < 64:
+      # Resolution is too low for camera
+      raise ValueError
+      
     self.camera.resolution = (width, height)
     self.camera.start_preview()
+    # Await camera preview to settle
     time.sleep(1)
-    self.camera.capture(stream, format='jpeg')
-    raw_data = stream.getvalue()
+    stream = picamera.array.PiRGBArray(self.camera)
+    self.camera.capture(stream, format='bgr')
+    raw_data = stream.array
     return ImageData(raw_data)
 
   def apply_command_to_pins(self, pins, command):
