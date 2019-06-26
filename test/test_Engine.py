@@ -2,7 +2,7 @@ import unittest
 import random
 import math
 from unittest.mock import Mock, MagicMock, call, patch
-from helpers.image_data import ImageData
+from hardware.image_data import ImageData
 from helpers.os import set_environ
 from helpers.testing_tools import measure_time_for_fn, percent_error, \
   get_activated_pin_ids_from_calls

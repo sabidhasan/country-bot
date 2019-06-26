@@ -3,7 +3,7 @@ import os
 from unittest.mock import Mock, MagicMock, seal
 import numpy as np
 
-from helpers.image_data import ImageData
+from hardware.image_data import ImageData
 from helpers.testing_tools import get_mocked_camera_input
 
 

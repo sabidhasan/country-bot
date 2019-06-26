@@ -3,7 +3,7 @@ import math
 import io
 import os
 
-from helpers.image_data import ImageData
+from hardware.image_data import ImageData
 
 if os.environ.get('country_bot_env') == "TESTING":
   import BotFakeRPi.GPIO as GPIO
