@@ -10,12 +10,16 @@ RPi module cannot run on non-RPi devices. To get around this, a dummy fake RPi m
 Enable camera in raspberry pi settings: `raspbian-config`
 - `python3-picamera`
 - `opencv-python`
-- `BotFakeRPi` (adapted from https://github.com/sn4k3/FakeRPi)
+- `numpy`
+- `BotFakeRPi` (for testing; adapted from https://github.com/sn4k3/FakeRPi)
+- Pillow and its dependencies, which require the following on RPi
+  - `sudo apt-get install libopenjp2-7`
+  - `sudo apt install libtiff5`
 
 
 # References
-**Ultrasonic Sensor**: https://www.modmypi.com/blog/hc-sr04-ultrasonic-range-sensor-on-the-raspberry-pi
-**L298**: https://www.explainingcomputers.com/rasp_pi_robotics.html
+- **Ultrasonic Sensor**: https://www.modmypi.com/blog/hc-sr04-ultrasonic-range-sensor-on-the-raspberry-pi
+- **L298**: https://www.explainingcomputers.com/rasp_pi_robotics.html
 
 
 # Notes to Self
