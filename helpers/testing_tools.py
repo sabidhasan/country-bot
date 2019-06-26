@@ -1,4 +1,5 @@
 import time
+import numpy as np
 
 def measure_time_for_fn(function):
   start_time = time.time()
@@ -19,3 +20,10 @@ def get_activated_pin_ids_from_calls(call_args_list):
   activated_pins = filter(lambda x: x[1] == True, call_arguments)
   # Map only first argument - this is the pin that was activated
   return list(map(lambda x: x[0], activated_pins))
+
+def get_mocked_camera_input():
+  """ Loads raw camera numpy array for testing purposes """
+  # The np.save function doens't play nicely with 3D arrays, so we stored it 
+  # flat, and reshape it upon load
+  flat_array = np.load('test/test_images/image_banana_color_raw.npy')
+  return flat_array.reshape(256, 256, 3)
