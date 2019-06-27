@@ -23,42 +23,52 @@ Enable camera in raspberry pi settings:
 # References
 - **Ultrasonic Sensor**: https://www.modmypi.com/blog/hc-sr04-ultrasonic-range-sensor-on-the-raspberry-pi
 - **L298**: https://www.explainingcomputers.com/rasp_pi_robotics.html
+- **Websockets**: https://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
 
 
 # Notes to Self
 - if you get `picamera.exc.PiCameraMMALError: Failed to enable connection: Out of resources` when instantiating the engine, existing python processes (`ps -a`) must be killed
-- Figure out wheel radius and speed of motor (this will be voltage dependent)
-- self.brain for SelfDrivingCar(Car)
-- Car - acceleration calc'd by distan
-      has a moved_timestamps array [] for when move issued
-      this allows calculating acceleration and "current speed"
-      has a self.car_hardware object that actually talks to hardware
-- **Websockets**: https://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
+- for ErrNo 48 port in use, use `ps -fA | grep python` and kill the offending process
 
 
 # To Do / Future
-- The Fake RPi class imports its fake image thru hard path - fix that
-- Image class - should return ImageData instance when converting images to b&w etc.
-- webserver /data endpoint should fix binary JSON issue.
-    - should return properly stringified binary JSON data
-    - should accept parameters for type of image needed
-- reduce sleep time for camera capturing time.sleep 
+**HARDWARE**
 - Hardware: battery pack / camera / ultrasonic sensor / car is unscrewed
-- Write ImageData class 240 x 320 is sufficient
-- Write web server for controllable car (basic auth, db, shows curr img, controls for moving, us_distance) - simple version
-- Write non-blocking versions of get_us_distance and get_camera (threadpool executor)
-- Sockets for continuous stream of inputs
 - Make 'roads'
-- Add functionality for gathering data (database, sessions, downloading files, button for 'make my brake count' (as normally the training will only record upon a forward/right/left from user))
-- Object detection for stopsigns and traffic lights
-- Forward collision detection
-- ML training
-    - fake more data by flipping image / adding noise / brightness / contrast
-    - Haar feature-based cascade classifiers for objects
-    - OpenCV
+
+**WEB SERVER**
+- Add catch-all route for main page
+- Add authentication to main page
+- Training
+    - Use a model (?) to add a Training_DB
+    - Collect data when driving (database, downloading files, etc)
+- fix image data from `/data` endpoint 
+    - fix binary JSON (it sends as "b'<data>'", so chop it before sending).
+    - endpoint should accept parameters for type of image
+- Probe a websockets approach for continuous stream
+
+**IMAGE CLASS**
+- Image class - should return ImageData instance when converting images to b&w etc.
+
+**ENGINE CLASS**
+- Figure out wheel radius and speed of motor (this will be voltage dependent)
+- reduce sleep time for camera capturing time.sleep 
+- Image default size 320x240 is good
+- Write non-blocking versions of get_us_distance and get_camera (threadpool executor) - is it needed?
+
+**CAR CLASS**
+- Make a ControllableCar class, and call that instead of Car from webserver entrypoint
 - Self Driving car
+    - self.brain should be defined
     - check for forwrd object
     - check for stopsign (if so, wait 3 sec)
     - check for traffic light
     - get model to predict based on inputs 
+
+**LEARNING**
+- Forward collision detection
+- Learning Strategy
+    - fake input data by flipping image / adding noise / brightness / contrast
+    - Haar feature-based cascade classifiers for objects (stop signs and traffic lights)
+    - OpenCV
 - Navigation?
