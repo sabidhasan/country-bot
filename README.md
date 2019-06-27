@@ -7,14 +7,17 @@ RPi module cannot run on non-RPi devices. To get around this, a dummy fake RPi m
 
 
 # Dependencies
-Enable camera in raspberry pi settings: `raspbian-config`
-- `python3-picamera`
+Enable camera in raspberry pi settings:
+  - `raspbian-config`
+  - Install `RPi.GPIO`
+  - Install `python3-picamera`, which gives access to picamera and picamera.array
 - `opencv-python`
 - `numpy`
 - `BotFakeRPi` (for testing; adapted from https://github.com/sn4k3/FakeRPi)
 - Pillow and its dependencies, which require the following on RPi
   - `sudo apt-get install libopenjp2-7`
   - `sudo apt install libtiff5`
+- `Flask` for webserver
 
 
 # References
@@ -34,8 +37,13 @@ Enable camera in raspberry pi settings: `raspbian-config`
 
 
 # To Do / Future
+- The Fake RPi class imports its fake image thru hard path - fix that
+- Image class - should return ImageData instance when converting images to b&w etc.
+- webserver /data endpoint should fix binary JSON issue.
+    - should return properly stringified binary JSON data
+    - should accept parameters for type of image needed
+- reduce sleep time for camera capturing time.sleep 
 - Hardware: battery pack / camera / ultrasonic sensor / car is unscrewed
-- Write tests for ImageData class (processes a raw image into numpy array)
 - Write ImageData class 240 x 320 is sufficient
 - Write web server for controllable car (basic auth, db, shows curr img, controls for moving, us_distance) - simple version
 - Write non-blocking versions of get_us_distance and get_camera (threadpool executor)
