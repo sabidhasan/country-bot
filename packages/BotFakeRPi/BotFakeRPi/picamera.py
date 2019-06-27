@@ -2,9 +2,10 @@ import numpy as np
 
 class PiCamera(object):
 	""" Fake class for mocking PiCamera """
-	def __init__(self, resolution=(256,256)):
+	def __init__(self, resolution=(256,256, 3)):
 		self.resolution = resolution
-		self.array = np.random.rand(*resolution)
+		flat_array = np.load('../test/test_images/image_banana_color_raw.npy')
+		self.array = flat_array.reshape(256, 256, 3)
 
 	def close(self):
 		pass
