@@ -62,7 +62,6 @@ class Car(object):
       Moves the car forward; returns False is failure or tuple of current car 
       sensors if successful (inputs are Ultrasonic and camera)
     """
-
     return self.move_car('left')
 
   def go_right(self):
@@ -75,4 +74,11 @@ class Car(object):
 
   def get_image(self):
     """ Returns a processed image from the car of type ImageData """
-    return self.engine.get_image()
+    return str(self.engine.get_image().tobase64())
+
+  def get_distance(self):
+    """ Returns current forward distance """
+    return self.engine.get_us_distance()
+
+  def get_moves(self):
+    return self.moves
