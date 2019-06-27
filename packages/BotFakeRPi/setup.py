@@ -13,6 +13,7 @@ setup(
     long_description=open('README.md').read(),
     keywords='GPIO, RPi, Bot_Fake_RPi',
     include_package_data=True,
+    package_data={'BotFakeRPi': ['fake_image.npy']},
     packages=['BotFakeRPi'],
     # See http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[

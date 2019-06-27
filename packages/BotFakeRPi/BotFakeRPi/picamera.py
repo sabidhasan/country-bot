@@ -1,10 +1,18 @@
 import numpy as np
+import pkgutil
+
+def get_flat_array():
+	""" Returns fake image data, a flattened numpy array """
+	raw_data = pkgutil.get_data('BotFakeRPi', 'fake_image.npy')
+	# First 128 are useless - numpy.load discards them automatically, but frombuffer reads 
+	# the data in its entirety, so we ignore the first 128 manually here.
+	return np.frombuffer(raw_data, dtype=np.uint8)[128:]
 
 class PiCamera(object):
 	""" Fake class for mocking PiCamera """
 	def __init__(self, resolution=(256,256, 3)):
 		self.resolution = resolution
-		flat_array = np.load('../test/test_images/image_banana_color_raw.npy')
+		flat_array = get_flat_array()
 		self.array = flat_array.reshape(256, 256, 3)
 
 	def close(self):
