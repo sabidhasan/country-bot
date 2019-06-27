@@ -3,13 +3,14 @@ from flask import Flask
 import sys
 sys.path.append('..')
 
-from app.routes import routes_blueprint_creator
+from routes import routes_blueprint_creator
 from helpers.os import set_environ
 
 if len(sys.argv) > 1 and sys.argv[1].upper() == "DEV=1":
   set_environ('TESTING')
 
 from hardware import car, engine
+
 engine = engine.Engine()
 car = car.Car(engine)
 
