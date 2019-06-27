@@ -84,7 +84,7 @@ class EngineTests(unittest.TestCase):
     # When issued a go_straight command, RPi straight pin is activated
     @patch('hardware.engine.GPIO.output')
     def test_go_straight_command(self, mock_gpio):
-      expected_pins = [13]
+      expected_pins = [15]
       self.engine.go_straight()
       # Get what pins were activated from calls to GPIO.output function
       actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)
@@ -93,7 +93,7 @@ class EngineTests(unittest.TestCase):
     # When issued a go_left command, RPi left + straight pins are activated
     @patch('hardware.engine.GPIO.output')
     def test_go_left_command(self, mock_gpio):
-      expected_pins = [11, 13]
+      expected_pins = [11, 15]
       self.engine.go_left()
       # Get what pins were activated from calls to GPIO.output function
       actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)
@@ -102,7 +102,7 @@ class EngineTests(unittest.TestCase):
     # When issued a go_right command, RPi right + straight called
     @patch('hardware.engine.GPIO.output')
     def test_go_right_command(self, mock_gpio):
-      expected_pins = [7, 13]
+      expected_pins = [7, 15]
       self.engine.go_right()
       # Get what pins were activated from calls to GPIO.output function
       actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)

@@ -115,15 +115,15 @@ class Engine(object):
 
   def go_straight(self):
     """ Make the car go straight for the duration specified by class """
-    self.activate_motor_pins_for_duration([13])
+    self.activate_motor_pins_for_duration([15])
     return True
 
   def go_left(self):
     """ Make the car go straight for the duration specified by class """
-    self.activate_motor_pins_for_duration([11, 13])
+    self.activate_motor_pins_for_duration([11, 15])
     return True
     
   def go_right(self):
     """ Make the car go straight for the duration specified by class """
-    self.activate_motor_pins_for_duration([7, 13])
+    self.activate_motor_pins_for_duration([7, 15])
     return True
