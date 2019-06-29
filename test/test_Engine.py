@@ -13,7 +13,7 @@ import hardware.engine as Engine
 
 
 def mock_gpio_input(RPi_pin_number):
-  """ The mock input function randomly decides when it has it an object a pulse from ultrasonic sensor """
+  """ The mock input function randomly decides when it has it an object in front of it """
   return random.random() > 0.9
 
 def mock_gpio_infinite(RPi_pin_number):
@@ -22,7 +22,7 @@ def mock_gpio_infinite(RPi_pin_number):
 
 class EngineTests(unittest.TestCase):
     def setUp(self):
-      self.engine = Engine.Engine(ultra_sonic_sensor_timeout=7E4)
+      self.engine = Engine.Engine(ultra_sonic_sensor_timeout=1E5)
 
     # Defines a revolutions per move constant
     def test_revs_per_move(self):
@@ -33,8 +33,8 @@ class EngineTests(unittest.TestCase):
     def test_move_duration(self):
       self.assertIsInstance(self.engine.move_duration, float,
                         'duration for a move event is not a number')
-      self.assertGreater(self.engine.move_duration, 0,
-                        'duration for a move event not greater than 0')
+      self.assertEqual(self.engine.move_duration, .5,
+                        'duration for a move event is not 0.5 sec')
 
     # Ultrasonic distance reading returns a distance
     @patch('hardware.engine.GPIO.input', side_effect=mock_gpio_input)
