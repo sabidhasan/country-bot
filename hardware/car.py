@@ -73,7 +73,7 @@ class Car(object):
     return self.move_car('right')
 
   def get_image(self):
-    """ Returns a processed image from the car of type ImageData """
+    """ Returns a processed image from the car - a base64 representation of a JPEG """
     return str(self.engine.get_image().tobase64())
 
   def get_distance(self):
