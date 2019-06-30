@@ -30,9 +30,6 @@
       }
       
       function updateDOMWithStats(stats) {
-        if (stats.cam) {
-          document.querySelector('.camera').src = `data:image/jpeg;base64, ${stats.cam.slice(2, -1)}`;
-        }
         if (stats.dist) {
           document.querySelector('.forwarddistance').textContent = stats.dist;
         }
@@ -60,7 +57,7 @@
       }
 
       setInterval(async function() {
-        let stats = await get_latest_stats(['cam', 'dist']);
+        let stats = await get_latest_stats(['dist']);
         updateDOMWithStats(stats);
       }, 4000)
     </script>
@@ -73,7 +70,7 @@
       <button class="moveLeft">Move Left</button>
     </div>
     <div class="data">
-      <img src="" alt="Live View of Car" class="camera" />
+      <img src="/camera" alt="Live View of Car" class="camera" />
       <div>
         Forward Sensor Distance:&nbsp;
         <span class="forwarddistance">...</span>
