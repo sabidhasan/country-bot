@@ -12,6 +12,7 @@ class PiCamera(object):
 	""" Fake class for mocking PiCamera """
 	def __init__(self, resolution=(256,256, 3)):
 		self.resolution = resolution
+		self.rotation = 0
 		flat_array = get_flat_array()
 		self.array = flat_array.reshape(256, 256, 3)
 
