@@ -59,4 +59,4 @@ class ImageDataTests(unittest.TestCase):
       actual_histogram = self.image.column_histogram()
       expected_histogram = np.load('test/test_images/image_banana_color_histogram.npy')
       self.assertEqual(np.array_equal(expected_histogram, actual_histogram), True,
-                        'expected histrogram did not match the produced histogram')
+                        'produced histrogram did not match the expected histogram')

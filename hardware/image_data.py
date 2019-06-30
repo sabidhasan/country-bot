@@ -7,11 +7,9 @@ class ImageData(object):
   """
     Used for storing image data from car camera.
   """
-  def __init__(self, raw_image, flip_vertical=False):
+  def __init__(self, raw_image):
     """ Raw image is numpy array from PiCamera stream capture in RGB format """
-    self.flip_vertical = flip_vertical
     self.image = raw_image
-
 
   @property
   def height(self):
@@ -28,8 +26,6 @@ class ImageData(object):
       raise TypeError('Non JPG formats not supported.')
 
     image = Image.fromarray(self.image)
-    if self.flip_vertical:
-      image = image.rotate(180)
     image.save(file_name, format='JPEG')
 
   def save_desaturated(self, file_name):
@@ -38,8 +34,6 @@ class ImageData(object):
     if not file_name.endswith('.jpg'):
       raise TypeError('Non JPG formats not supported.')
     image = Image.fromarray(self.image).convert('L')
-    if self.flip_vertical:
-      image = image.rotate(180)
     image.save(file_name, format='JPEG')
 
   def tobase64(self):
@@ -48,8 +42,6 @@ class ImageData(object):
     # Create a PIL image and save into IO buffer
     buffered = BytesIO()
     image = Image.fromarray(self.image)
-    if self.flip_vertical:
-      image = image.rotate(180)
     image.save(buffered, format="JPEG")
     return base64.b64encode(buffered.getvalue())
 
