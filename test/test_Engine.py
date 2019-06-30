@@ -51,12 +51,6 @@ class EngineTests(unittest.TestCase):
       self.assertTrue(reported_distance == math.inf,
                         'distance is not infinite when no object in front of sensor')
 
-    # # get_image returns an image of type ImageData (raw image)
-    def test_get_image(self):
-      raw_image = self.engine.get_image()
-      self.assertIsInstance(raw_image, ImageData,
-                        'raw image returned is not of type ImageData')
-    
     # When issued a go_straight command the time taken has <20s% error
     def test_go_straight_time(self):
       measured_time = measure_time_for_fn(self.engine.go_straight)

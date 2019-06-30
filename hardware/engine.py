@@ -3,15 +3,10 @@ import math
 import io
 import os
 
-from hardware.image_data import ImageData
-
 if os.environ.get('country_bot_env') == "TESTING":
   import BotFakeRPi.GPIO as GPIO
-  import BotFakeRPi.picamera as picamera
 else:
   import RPi.GPIO as GPIO
-  import picamera
-  import picamera.array
 
 class Engine(object):
   TRIG_PIN = 16
@@ -37,9 +32,6 @@ class Engine(object):
     # Set up and reset motor pins
     for pin in self.MOTOR_PINS:
       GPIO.setup(pin, GPIO.OUT)
-    
-    # Set up camera
-    self.camera = picamera.PiCamera()
 
   def get_us_distance(self):
     """
@@ -76,23 +68,6 @@ class Engine(object):
     except:
       # Error occured, return infinity for distance
       return math.inf
-
-  def get_image(self, width=672, height=496):
-    """
-      Acquires an image and returns it as ImageData
-    """
-    if height < 64 or width < 64:
-      # Resolution is too low for camera
-      raise ValueError
-      
-    self.camera.resolution = (width, height)
-    self.camera.start_preview()
-    # Await camera preview to settle
-    time.sleep(1.5)
-    stream = picamera.array.PiRGBArray(self.camera)
-    self.camera.capture(stream, format='bgr')
-    raw_data = stream.array
-    return ImageData(raw_data, flip_vertical=True)
 
   def move_car_with_pins(self, pins):
     """
