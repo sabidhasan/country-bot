@@ -83,7 +83,13 @@ class Car(object):
   def get_image(self):
     """ Returns a processed image from the car - a base64 representation of a JPEG """
     latest_image_data = self.camera.get_latest_image()
-    return str(latest_image_data.tobase64())
+    # tobase64 produces a bytes object that stringifies as "b'<data>'" ; start at pos 2 
+    # to chop off the quotation mark and 'b' character and get a proper string
+    try:
+      return str(latest_image_data.tobase64())[2:-1]
+    except IndexError:
+      # In the odd case that string is too short
+      return str(latest_image_data.tobase64())
 
   def get_distance(self):
     """ Returns current forward distance """
