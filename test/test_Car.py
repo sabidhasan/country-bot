@@ -1,7 +1,13 @@
 import unittest
-from unittest.mock import Mock, MagicMock, seal
+from unittest.mock import Mock, MagicMock, seal, patch
 import time
 from hardware.car import Car
+from hardware.camera import Camera
+
+
+fake_camera_mock = MagicMock()
+def stub_fake_camera():
+    return fake_camera_mock
 
 class CarTests(unittest.TestCase):
     def setUp(self):
@@ -11,6 +17,22 @@ class CarTests(unittest.TestCase):
         engine.go_right = MagicMock(return_value=True)
         seal(engine.go_straight)
         self.car = Car(engine)
+
+    # Attribute for create time
+    def test_created(self):
+        self.assertAlmostEqual(self.car.created, time.time(), 1,
+                        'object creation date does not match')
+
+    # Camera is defined
+    def test_camera(self):
+        self.assertIsInstance(self.car.camera, Camera,
+                        'camera attribute is not of type Camera')
+    
+    # Image method returns proper image
+    @patch('hardware.camera.Camera.get_latest_image', side_effect=stub_fake_camera)
+    def test_get_image(self, mock_cam):
+        _ = self.car.get_image()
+        self.assertEqual(fake_camera_mock.method_calls[0][0], 'tobase64')
 
     # Method for returning total distance travelled
     def test_distance_travelled(self):
