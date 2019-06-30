@@ -3,8 +3,10 @@ Run tests by
 ```
 python -m unittest discover
 ```
-RPi module cannot run on non-RPi devices. To get around this, a dummy fake RPi module is used as a mock.
-
+RPi module cannot run on non-RPi hardware, so this entire class is faked on non-RPi systems. This dummy fake RPi module that is used as a mock must be installed by:
+    `cd packages/BotFakeRPi`
+    `python setup.py install`
+If RPi not found errors arise, run in debug mode by appending DEV=1 when running from CLI.
 
 # Dependencies
 Enable camera in raspberry pi settings:
@@ -29,41 +31,40 @@ Enable camera in raspberry pi settings:
 # Notes to Self
 - if you get `picamera.exc.PiCameraMMALError: Failed to enable connection: Out of resources` when instantiating the engine, existing python processes (`ps -a`) must be killed
 - for ErrNo 48 port in use, use `ps -fA | grep python` and kill the offending process
+- Image default size 320x240 is good
 
 
 # To Do / Future
 **HARDWARE**
-- Hardware: battery pack / camera / ultrasonic sensor / car is unscrewed
-- Make 'roads'
+- Replace motor driver
+- Look into DC adapter
+- Attach camera properly
+- Tie down battery pack / ultrasonic sensor
+- Make 'roads' - need hard paper
 
 **WEB SERVER**
 - Add catch-all route for main page
-- Add authentication to main page
-- Training
-    - Use a model (?) to add a Training_DB
-    - Collect data when driving (database, downloading files, etc)
-- fix image data from `/data` endpoint 
-    - fix binary JSON (it sends as "b'<data>'", so chop it before sending).
-    - endpoint should accept parameters for type of image
-- Probe a websockets approach for continuous stream
-
-**IMAGE CLASS**
-- Image class - should return ImageData instance when converting images to b&w etc.
+- Add **tables** for users and training data (use models?)
+- Add **authentication** to main page
+- Collect training data when driving (database, downloading files, etc.)
+- Prettify front end **VueJS** front end
 
 **ENGINE CLASS**
 - Figure out wheel radius and speed of motor (this will be voltage dependent)
-- reduce sleep time for camera capturing time.sleep 
-- Image default size 320x240 is good
-- Write non-blocking versions of get_us_distance and get_camera (threadpool executor) - is it needed?
+- Use PWM (default 100%) to control speed. Self Driving car can use this to control speed
+
+**LOGGING**
+- Add logging class that logs when DEV=1
 
 **CAR CLASS**
 - Make a ControllableCar class, and call that instead of Car from webserver entrypoint
 - Self Driving car
-    - self.brain should be defined
+    - self.brain should be defined - this makes decisions on what to do
     - check for forwrd object
     - check for stopsign (if so, wait 3 sec)
     - check for traffic light
     - get model to predict based on inputs 
+    - add to engine class a drive_continuously with a speed attirnute that uses PWM
 
 **LEARNING**
 - Forward collision detection
@@ -72,3 +73,9 @@ Enable camera in raspberry pi settings:
     - Haar feature-based cascade classifiers for objects (stop signs and traffic lights)
     - OpenCV
 - Navigation?
+
+
+**LOW PRIORITY**
+--------------------
+**IMAGE CLASS** (LOW PRIORITY)
+- Image class - should return ImageData instance when converting images to b&w etc.
