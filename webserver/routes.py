@@ -38,7 +38,7 @@ def routes_blueprint_creator(car):
       if not param in car_sensor_methods: 
         continue
       try:
-      response[param] = str(car_sensor_methods[param]())
+        response[param] = str(car_sensor_methods[param]())
       except:
         abort(500)
     return json.dumps(response)
