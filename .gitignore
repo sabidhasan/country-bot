@@ -26,3 +26,9 @@ MANIFEST
 # Flask stuff:
 instance/
 .webassets-cache
+
+# JS stuff
+.browserslistrc
+.editorconfig
+.eslintrc.js
+package-lock.json

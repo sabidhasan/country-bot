@@ -26,7 +26,7 @@ Enable camera in raspberry pi settings:
 - **Ultrasonic Sensor**: https://www.modmypi.com/blog/hc-sr04-ultrasonic-range-sensor-on-the-raspberry-pi
 - **L298**: https://www.explainingcomputers.com/rasp_pi_robotics.html
 - **Websockets**: https://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
-
+- **mjpeg**: https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
 
 # Notes to Self
 - if you get `picamera.exc.PiCameraMMALError: Failed to enable connection: Out of resources` when instantiating the engine, existing python processes (`ps -a`) must be killed
@@ -65,6 +65,9 @@ Enable camera in raspberry pi settings:
     - check for traffic light
     - get model to predict based on inputs 
     - add to engine class a drive_continuously with a speed attirnute that uses PWM
+
+**CAMERA**
+- Write more tests for Camera class
 
 **LEARNING**
 - Forward collision detection
