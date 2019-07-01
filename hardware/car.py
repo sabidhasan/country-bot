@@ -1,9 +1,5 @@
 import math
 import time
-from helpers.os import set_environ
-
-# Set testing environment so Camera imports fake RPi camera
-set_environ("TESTING")
 from hardware.camera import Camera
 
 class Car(object):
