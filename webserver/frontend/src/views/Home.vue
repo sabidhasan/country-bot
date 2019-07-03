@@ -4,12 +4,11 @@
     <h1 class="title">Country-Bot</h1>
     <CarView />
     <CarStats :odometer="odometer" :sensor="sensor" :moves="moves" :created="created" :id="id" />
-    <CarControls @move="handleMove"/>
+    <CarControls @move="handleMove" :commandInProgress="commandInProgress" />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
 import NavBar from '@/components/NavBar.vue';
 import CarView from '@/components/CarView.vue';
 import CarStats from '@/components/CarStats.vue';
@@ -30,6 +29,7 @@ export default {
       moves: 0,
       created: null,
       id: null,
+      commandInProgress: false,
     };
   },
   methods: {
@@ -38,11 +38,14 @@ export default {
       if (!validMoves.includes(direction)) return;
       // Now emit move to server
       try {
+        this.commandInProgress = true;
         const resp = await fetch(`/move?${direction}`);
         const moveResult = await resp.json();
         if (moveResult.success === false) throw new Error('Move failed');
       } catch (e) {
         console.error(`${e}\nMove failed.`);
+      } finally {
+        this.commandInProgress = false;
       }
     },
     getData() {
@@ -50,6 +53,7 @@ export default {
         try {
           const data = await fetch('/data?odom&move&dist');
           const dataResult = await data.json();
+
           this.odometer = parseFloat(dataResult.odom);
           this.moves = parseFloat(dataResult.move);
           this.sensor = parseFloat(dataResult.dist).toFixed(2);
