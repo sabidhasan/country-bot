@@ -19,10 +19,13 @@ export default {
     id: { type: Number },
   },
   computed: {
-    createdDate: function () {
-      const months = ["JAN", "FEB", "MAR","APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    createdDate() {
+      if (!this.created) {
+        return "-";
+      }
+      const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
       const date = new Date(this.created);
-      
+
       const year = date.getFullYear();
       const month = months[date.getMonth()];
       const day = date.getDate();
