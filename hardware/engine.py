@@ -14,11 +14,11 @@ class Engine(object):
   MOTOR_PINS = [7, 11, 13, 15]
   ULTRASONIC_SENSOR_SETTLE_TIME = 0.2
   SPEED_OF_SOUND = 34300
+  MOVE_DURATION = 0.2
 
   def __init__(self, ultra_sonic_sensor_timeout=500000):
     self.revolutions_per_move = 2.0
     # Length in time of each move command in seconds
-    self.move_duration = 0.5
     self.ultra_sonic_sensor_timeout = ultra_sonic_sensor_timeout
 
     # Set up the Raspberry Pi
@@ -69,42 +69,36 @@ class Engine(object):
       # Error occured, return infinity for distance
       return math.inf
 
-  def move_car_with_pins(self, pins):
-    """
-      Moves the car, given an array of pins. Expected length 1 or 2 (move straight or a turn)
-      pins = [7, 11] -> turn wheels, then move car (duration for *each* step is self.move_duration / 2)
-      pins = [11] -> move car (duration is self.move_duration)
-    """
-    if not 0 < len(pins) < 3:
-      raise TypeError
-
-    if len(pins) == 2:
-      # First turn wheel
-      GPIO.output(pins[0], True)
-      time.sleep(self.move_duration / 2)
-      # Then move forward
-      GPIO.output(pins[1], True)
-      time.sleep(self.move_duration / 2)
-    else:
-      # Move forward, as there is only one pin specified
-      GPIO.output(pins[0], True)
-      time.sleep(self.move_duration)
-    
-    # Reset all pins
-    for pin in pins:
-      GPIO.output(pin, False)
+  def complex_motion(self, turn_pin, straight_pin):
+    """ Turn car in direction of pin specified """
+    if not turn_pin in self.MOTOR_PINS or not straight_pin in self.MOTOR_PINS: raise ValueError
+    # Turn the steering
+    GPIO.output(turn_pin, True)
+    time.sleep(0.1)
+    # Move forward
+    GPIO.output(straight_pin, True)
+    time.sleep(self.MOVE_DURATION)
+    # Stop forward motion and wait for car to stop
+    GPIO.output(straight_pin, False)
+    time.sleep(0.4)
+    GPIO.output(turn_pin, False)
+  
+  def simple_motion(self, pin):
+    """ Moves the car forward for MOVE_DURATION, applying motion to given pin """
+    if not pin in self.MOTOR_PINS: raise ValueError
+    GPIO.output(pin, True)
+    time.sleep(self.MOVE_DURATION)
+    GPIO.output(pin, False)
+    return True
 
   def go_straight(self):
     """ Make the car go straight for the duration specified by class """
-    self.move_car_with_pins([15])
-    return True
+    return self.simple_motion(15)
 
   def go_left(self):
     """ Make the car go straight for the duration specified by class """
-    self.move_car_with_pins([11, 15])
-    return True
+    return self.complex_motion(11, 15)
     
   def go_right(self):
     """ Make the car go straight for the duration specified by class """
-    self.move_car_with_pins([7, 15])
-    return True
+    return self.complex_motion(7, 15)

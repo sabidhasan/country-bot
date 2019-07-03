@@ -29,12 +29,12 @@ class EngineTests(unittest.TestCase):
       self.assertIsInstance(self.engine.revolutions_per_move, float,
                         'tire revolutions per move is not a number')
 
-    # Defines a move_duration
+    # Defines a MOVE_DURATION
     def test_move_duration(self):
-      self.assertIsInstance(self.engine.move_duration, float,
+      self.assertIsInstance(self.engine.MOVE_DURATION, float,
                         'duration for a move event is not a number')
-      self.assertEqual(self.engine.move_duration, .5,
-                        'duration for a move event is not 0.5 sec')
+      self.assertEqual(self.engine.MOVE_DURATION, .2,
+                        'duration for a move event is not' + str(self.engine.MOVE_DURATION) + 'sec')
 
     # Ultrasonic distance reading returns a distance
     @patch('hardware.engine.GPIO.input', side_effect=mock_gpio_input)
@@ -54,7 +54,7 @@ class EngineTests(unittest.TestCase):
     # When issued a go_straight command the time taken has <20s% error
     def test_go_straight_time(self):
       measured_time = measure_time_for_fn(self.engine.go_straight)
-      expected_time = self.engine.move_duration
+      expected_time = self.engine.MOVE_DURATION
       error = percent_error(measured_time, expected_time) 
       self.assertLessEqual(error, .2,
                         'time taken to move straight is not as expected; percent error too high')
@@ -62,7 +62,9 @@ class EngineTests(unittest.TestCase):
     # When issued a go_left command the time taken has <1% error
     def test_go_left_time(self):
       measured_time = measure_time_for_fn(self.engine.go_left)
-      expected_time = self.engine.move_duration
+      # Expected time for turns is longer - steering is first turned then
+      # the car is moved, then wait for car to stop before steering straight
+      expected_time = self.engine.MOVE_DURATION + 0.5
       error = percent_error(measured_time, expected_time) 
       self.assertLessEqual(error, .1,
                         'time taken to move left is not as expected; percent error too high')
@@ -70,7 +72,9 @@ class EngineTests(unittest.TestCase):
     # When issued a go_right command the time taken has <1% error
     def test_go_right_time(self):
       measured_time = measure_time_for_fn(self.engine.go_right)
-      expected_time = self.engine.move_duration
+      # Expected time for turns is longer - steering is first turned then
+      # the car is moved, then wait for car to stop before steering straight
+      expected_time = self.engine.MOVE_DURATION + 0.5
       error = percent_error(measured_time, expected_time) 
       self.assertLessEqual(error, .1,
                         'time taken to move right is not as expected')
