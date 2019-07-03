@@ -19,4 +19,9 @@ export default {
 .car_view_img {
   max-width: 100%; max-height: 100%;
 }
+@media screen and (max-width: 500px) {
+  .car_view {
+    grid-column: 1 / -1;
+  }
+}
 </style>
