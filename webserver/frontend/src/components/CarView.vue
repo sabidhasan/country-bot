@@ -14,10 +14,10 @@ export default {
 
 <style scoped>
 .car_view {
-  grid-column: 1 / span 2;
+  grid-column: 1 / span 2; display: flex; justify-content: center;
 }
 .car_view_img {
-  max-width: 100%; max-height: 100%;
+  max-width: 100%; max-height: 100%; height: 90%;
 }
 @media screen and (max-width: 500px) {
   .car_view {

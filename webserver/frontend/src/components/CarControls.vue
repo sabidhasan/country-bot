@@ -13,21 +13,20 @@
 </template>
 
 <script>
-function keyPressListener({ key } = e) {
+function keyPressListener({ key }) {
   switch (key) {
     case 'ArrowUp':
     case 'w':
-      this.goForward();
-      break;
+      return this.goForward();
     case 'ArrowLeft':
     case 'a':
-      this.goLeft();
-      break;
+      return this.goLeft();
     case 'ArrowRight':
     case 'd':
-      this.goRight();
-      break;
-  };
+      return this.goRight();
+    default:
+      return null;
+  }
 }
 
 export default {
@@ -66,16 +65,12 @@ export default {
   background: gray;
 }
 .ctrl_button {
-  border: 1px solid black;
-  background: var(--color1);
-  padding: 12px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  width: 20%;
+  color: var(--dark); background: var(--accent-dark); padding: 12px;
+  font-size: 1.5rem; font-weight: bold; width: 20%; border: 0;
 }
 @media screen and (max-width: 500px) {
   .car_controls button {
-    width: auto;
+    width: auto; font-size: 1.1rem; border-radius: 5px;
   }
 }
 </style>

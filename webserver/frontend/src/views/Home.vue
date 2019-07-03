@@ -1,7 +1,6 @@
 <template>
   <div class="home">
     <NavBar />
-    <h1 class="title">Country-Bot</h1>
     <CarView />
     <CarStats :odometer="odometer" :sensor="sensor" :moves="moves" :created="created" :id="id" />
     <CarControls @move="handleMove" :commandInProgress="commandInProgress" />
@@ -58,7 +57,7 @@ export default {
           this.moves = parseFloat(dataResult.move);
           this.sensor = parseFloat(dataResult.dist).toFixed(2);
           if (!this.id) this.id = dataResult.id;
-          if (!this.created) this.id = dataResult.created;
+          if (!this.created) this.created = dataResult.created;
         } catch (e) {
           console.error('Failed to fetch latest data.');
         }
@@ -75,12 +74,15 @@ export default {
 </script>
 
 <style>
-  .home {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    height: 100%; grid-template-rows: auto auto 1fr auto;
-    grid-gap: 10px;
-  }
-  .title {
-    grid-column: -1 / 1; text-align: center; margin: 0;
-  }
+body {
+  background: var(--dark);
+}
+.home {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  height: 100%; grid-template-rows: auto 1fr auto;
+  grid-gap: 10px; grid-gap: 10px 20px;
+}
+.title {
+  grid-column: -1 / 1; text-align: center; margin: 0;
+}
 </style>

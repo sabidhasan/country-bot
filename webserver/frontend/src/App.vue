@@ -8,18 +8,21 @@
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Raleway:200,400,500&display=swap');
 :root {
-  --color1: bisque;
+  --dark: #22201c;
+  --accent-dark: #a33327;
+  --accent-light: #689675;
+  --light: #ad8173;
 }
 body {
-  height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
-  margin: 0;
-  padding: 15px;
-  box-sizing: border-box;
+  font-family: 'Raleway', sans-serif; height: 100vh; padding: 15px;
+  max-height: 100vh; overflow: hidden; margin: 0; box-sizing: border-box;
 }
 #app {
   height: 100%;
+}
+@media screen and (max-width: 500px) {
+  padding: 5px;
 }
 </style>
