@@ -14,7 +14,8 @@ class Engine(object):
   MOTOR_PINS = [7, 11, 13, 15]
   ULTRASONIC_SENSOR_SETTLE_TIME = 0.2
   SPEED_OF_SOUND = 34300
-  MOVE_DURATION = 0.2
+  MOVE_DURATION = 0.3
+  BRAKE_AND_TURN_PAUSE_TIME = 0.1
 
   def __init__(self, ultra_sonic_sensor_timeout=500000):
     self.revolutions_per_move = 2.0
@@ -69,18 +70,26 @@ class Engine(object):
       # Error occured, return infinity for distance
       return math.inf
 
+  def apply_brakes(self):
+    """ Momentarily applies brakes to prevent car from rolling """
+    GPIO.output(13, True)
+    time.sleep(self.BRAKE_AND_TURN_PAUSE_TIME)
+    GPIO.output(13, False)
+
   def complex_motion(self, turn_pin, straight_pin):
     """ Turn car in direction of pin specified """
-    if not turn_pin in self.MOTOR_PINS or not straight_pin in self.MOTOR_PINS: raise ValueError
+    if not turn_pin in self.MOTOR_PINS or not straight_pin in self.MOTOR_PINS:
+      raise ValueError
     # Turn the steering
     GPIO.output(turn_pin, True)
-    time.sleep(0.1)
+    time.sleep(self.BRAKE_AND_TURN_PAUSE_TIME)
     # Move forward
     GPIO.output(straight_pin, True)
     time.sleep(self.MOVE_DURATION)
     # Stop forward motion and wait for car to stop
     GPIO.output(straight_pin, False)
-    time.sleep(0.4)
+    self.apply_brakes()
+    # time.sleep(2 * self.MOVE_DURATION)
     GPIO.output(turn_pin, False)
   
   def simple_motion(self, pin):
@@ -89,6 +98,7 @@ class Engine(object):
     GPIO.output(pin, True)
     time.sleep(self.MOVE_DURATION)
     GPIO.output(pin, False)
+    self.apply_brakes()
     return True
 
   def go_straight(self):

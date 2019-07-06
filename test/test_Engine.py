@@ -33,8 +33,15 @@ class EngineTests(unittest.TestCase):
     def test_move_duration(self):
       self.assertIsInstance(self.engine.MOVE_DURATION, float,
                         'duration for a move event is not a number')
-      self.assertEqual(self.engine.MOVE_DURATION, .2,
-                        'duration for a move event is not' + str(self.engine.MOVE_DURATION) + 'sec')
+      self.assertEqual(self.engine.MOVE_DURATION, .3,
+                        'duration for a move event is not 0.3 sec')
+
+    # Defines a BRAKE_AND_TURN_PAUSE_TIME
+    def test_pause_time(self):
+      self.assertIsInstance(self.engine.BRAKE_AND_TURN_PAUSE_TIME, float,
+                        'duration for pause time is not a number')
+      self.assertEqual(self.engine.BRAKE_AND_TURN_PAUSE_TIME, .1,
+                        'duration for pause time is not 0.1 sec')
 
     # Ultrasonic distance reading returns a distance
     @patch('hardware.engine.GPIO.input', side_effect=mock_gpio_input)
@@ -54,7 +61,8 @@ class EngineTests(unittest.TestCase):
     # When issued a go_straight command the time taken has <20s% error
     def test_go_straight_time(self):
       measured_time = measure_time_for_fn(self.engine.go_straight)
-      expected_time = self.engine.MOVE_DURATION
+      # Move duration plus brake duration
+      expected_time = 0.3 + 0.1
       error = percent_error(measured_time, expected_time) 
       self.assertLessEqual(error, .2,
                         'time taken to move straight is not as expected; percent error too high')
@@ -64,7 +72,8 @@ class EngineTests(unittest.TestCase):
       measured_time = measure_time_for_fn(self.engine.go_left)
       # Expected time for turns is longer - steering is first turned then
       # the car is moved, then wait for car to stop before steering straight
-      expected_time = self.engine.MOVE_DURATION + 0.5
+      # Move duration plus brake pause + turn pause
+      expected_time = 0.3 + 0.1 + 0.1
       error = percent_error(measured_time, expected_time) 
       self.assertLessEqual(error, .1,
                         'time taken to move left is not as expected; percent error too high')
@@ -74,7 +83,7 @@ class EngineTests(unittest.TestCase):
       measured_time = measure_time_for_fn(self.engine.go_right)
       # Expected time for turns is longer - steering is first turned then
       # the car is moved, then wait for car to stop before steering straight
-      expected_time = self.engine.MOVE_DURATION + 0.5
+      expected_time = self.engine.MOVE_DURATION + 0.2
       error = percent_error(measured_time, expected_time) 
       self.assertLessEqual(error, .1,
                         'time taken to move right is not as expected')
@@ -82,7 +91,7 @@ class EngineTests(unittest.TestCase):
     # When issued a go_straight command, RPi straight pin is activated
     @patch('hardware.engine.GPIO.output')
     def test_go_straight_command(self, mock_gpio):
-      expected_pins = [15]
+      expected_pins = [13, 15]
       self.engine.go_straight()
       # Get what pins were activated from calls to GPIO.output function
       actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)
@@ -91,7 +100,7 @@ class EngineTests(unittest.TestCase):
     # When issued a go_left command, RPi left + straight pins are activated
     @patch('hardware.engine.GPIO.output')
     def test_go_left_command(self, mock_gpio):
-      expected_pins = [11, 15]
+      expected_pins = [11, 13, 15]
       self.engine.go_left()
       # Get what pins were activated from calls to GPIO.output function
       actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)
@@ -100,7 +109,7 @@ class EngineTests(unittest.TestCase):
     # When issued a go_right command, RPi right + straight called
     @patch('hardware.engine.GPIO.output')
     def test_go_right_command(self, mock_gpio):
-      expected_pins = [7, 15]
+      expected_pins = [7, 13, 15]
       self.engine.go_right()
       # Get what pins were activated from calls to GPIO.output function
       actual_activated_pins = get_activated_pin_ids_from_calls(mock_gpio.call_args_list)
