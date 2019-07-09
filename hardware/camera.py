@@ -8,8 +8,10 @@ from PIL import Image
 if os.environ.get('country_bot_env') == "TESTING":
   import BotFakeRPi.picamera as picamera
 else:
-  import picamera
-
+  try:
+    import picamera
+  except ImportError:
+    import BotFakeRPi.picamera as picamera
 from hardware.image_data import ImageData
 
 class Camera(object):

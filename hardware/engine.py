@@ -6,7 +6,10 @@ import os
 if os.environ.get('country_bot_env') == "TESTING":
   import BotFakeRPi.GPIO as GPIO
 else:
-  import RPi.GPIO as GPIO
+  try:
+    import RPi.GPIO as GPIO
+  except ImportError:
+    import BotFakeRPi.GPIO as GPIO
 
 class Engine(object):
   TRIG_PIN = 16
@@ -91,6 +94,7 @@ class Engine(object):
     self.apply_brakes()
     # time.sleep(2 * self.MOVE_DURATION)
     GPIO.output(turn_pin, False)
+    return True
   
   def simple_motion(self, pin):
     """ Moves the car forward for MOVE_DURATION, applying motion to given pin """
