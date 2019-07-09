@@ -6,7 +6,10 @@ python -m unittest discover
 RPi module cannot run on non-RPi hardware, so this entire class is faked on non-RPi systems. This dummy fake RPi module that is used as a mock must be installed by:
     `cd packages/BotFakeRPi`
     `python setup.py install`
-If RPi not found errors arise, run in debug mode by appending DEV=1 when running from CLI.
+
+# Development
+- Run Python modules in debug mode by appending DEV=1 when running from CLI.
+- To only run front end code, run `npm run serve` in the /webserver/frontend directory
 
 # Dependencies
 Enable camera in raspberry pi settings:
@@ -16,10 +19,17 @@ Enable camera in raspberry pi settings:
 - `opencv-python`
 - `numpy`
 - `BotFakeRPi` (for testing; adapted from https://github.com/sn4k3/FakeRPi)
-- Pillow and its dependencies, which require the following on RPi
+- PIL and its dependencies, which require the following on RPi
   - `sudo apt-get install libopenjp2-7`
   - `sudo apt install libtiff5`
 - `Flask` for webserver
+  - cd into `/wesberver`, run `python3 app.py`
+- `SQLAlchemy` for database management
+- `VueCLI` for front end and `npm` package manager and `NodeJS`
+  - Build front end by cd into `/webserver/frontend`
+  - `npm run build` - the resulting dist folder contains built files; `app.py` serves these
+- Build database for training data by using
+  - `python migrate.py` in the webserver directory. This creates a database using model in the file
 
 
 # References
@@ -36,18 +46,13 @@ Enable camera in raspberry pi settings:
 
 # To Do / Future
 **HARDWARE**
-- Replace motor driver
-- Look into DC adapter
-- Attach camera properly
-- Tie down battery pack / ultrasonic sensor
-- Make 'roads' - need hard paper
+- Replace motor driver / DC adapter
 
 **WEB SERVER**
-- Add catch-all route for main page
-- Add **tables** for users and training data (use models?)
-- Add **authentication** to main page
+- Add 404 page for front end as routing is handled there now
+- Add **table** for training data
 - Collect training data when driving (database, downloading files, etc.)
-- Prettify front end **VueJS** front end
+- Prettify front end
 
 **ENGINE CLASS**
 - Figure out wheel radius and speed of motor (this will be voltage dependent)
