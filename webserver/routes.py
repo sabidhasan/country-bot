@@ -1,13 +1,19 @@
 from flask import Blueprint, request, abort, render_template, Response
 import json
 import time
+from training_writer import TrainingWriter
 
-def routes_blueprint_creator(car):
+
+def routes_blueprint_creator(car, db):
   """
     Sets up a blueprint for importing routes. car is an instance of the Car object
+    db is an instance of the SQLAlchemy class created in app.py
     Blueprint allows refactoring routes into its own module.
   """
   routes = Blueprint('routes', __name__)
+  # Training writer keeps track of whether we are in free-drive mode or
+  # training mode (and if so, records the training to database)
+  training_writer = TrainingWriter(db)
 
   def latest_image_generator(camera):
     """ Generator that yields the latest data from the camera """
@@ -78,16 +84,34 @@ def routes_blueprint_creator(car):
       # Something wrong with the car itself?
       return abort(500)
 
+    try:
+      training_writer.record_training_if_active(car=car, direction=requested_params[0])
+      written_in_db = True
+    except:
+      # Writing in DB failed
+      written_in_db = False
+    
     return json.dumps({
       'success': success,
       'time': time.time(),
-      'id': id(car)
+      'id': id(car),
+      'written_in_db': written_in_db,
     })
 
+  @routes.route('/training')
+  def training():
+    """
+      This route is activated when 'training' is clicked on front end. It makes all future
+      routes (using middleware training decorator) be forced to write data to DB until expiry
+    """
+    expires = time.time() - (training_writer.activated + training_writer.TIMEOUT)
+    training_writer.set_active()
+    return json.dumps({ 'training': training_writer.active, 'expires': expires })
 
-  @routes.route('/', methods=['GET'])
-  def index():
-    return render_template('index.html')
+
+  # @routes.route('/', methods=['GET'])
+  # def index():
+  #   return render_template('index.html')
 
   return routes
 
