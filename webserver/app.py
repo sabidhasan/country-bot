@@ -1,4 +1,7 @@
 from flask import Flask, send_from_directory, render_template
+from dbconfig import database_file
+from models import db, Training
+
 # Allow importing parent module
 import sys
 sys.path.append('..')
@@ -18,18 +21,23 @@ car = car.Car(engine)
 # Template folder serves the HTML files. JS and CSS are served from static_routes
 app = Flask(__name__, template_folder = "./frontend/dist")
 
-# Register all routes
-routes_blueprint = routes_blueprint_creator(car)
-static_blueprint = static_blueprint_creator()
+# Define db
+app.config["SQLALCHEMY_DATABASE_URI"] = database_file
+db.init_app(app)
+
+# Register all routes (db passed to routes so they can write to it)
+routes_blueprint = routes_blueprint_creator(car, db)
 app.register_blueprint(routes_blueprint)
+
+static_blueprint = static_blueprint_creator()
 app.register_blueprint(static_blueprint)
 
-# Catch all route
+# Catch all route for serving Vue app
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    return render_template("index.html")
+  return render_template("index.html")
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4000)
+    app.run(host='0.0.0.0', port=4000, debug=True)
