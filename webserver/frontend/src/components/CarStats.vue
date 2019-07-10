@@ -30,7 +30,7 @@ export default {
         return '-';
       }
       const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-      const date = new Date(this.created);
+      const date = new Date(this.created * 1000);
 
       const year = date.getFullYear();
       const month = months[date.getMonth()];

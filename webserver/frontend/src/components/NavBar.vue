@@ -39,6 +39,9 @@ nav {
   .nav-container {
     display: grid; width: 100%; grid-template-columns: 1fr;
   }
+  .nav_item {
+    font-size: 1.3rem;
+  }
   nav {
     justify-self: center; margin-top: 10px;
   }
