@@ -75,46 +75,35 @@ def routes_blueprint_creator(car, db):
     
     try:
       move_function = car_move_methods[requested_params[0]]
-      success = move_function()
     except KeyError:
       # Requested direction is invalid
       return abort(400)
     
-    if success == False:
-      # Something wrong with the car itself?
-      return abort(500)
-
     try:
       training_writer.record_training_if_active(car=car, direction=requested_params[0])
       written_in_db = True
     except:
       # Writing in DB failed
       written_in_db = False
-    
+
+    # Move the car
+    move_function()
+
     return json.dumps({
-      'success': success,
+      'success': True,
       'time': time.time(),
       'id': id(car),
       'written_in_db': written_in_db,
     })
 
-  @routes.route('/training')
-  def training():
+  @routes.route('/enable_training')
+  def enable_training():
     """
-      This route is activated when 'training' is clicked on front end. It makes all future
-      routes (using middleware training decorator) be forced to write data to DB until expiry
+      This route is activated when 'training' is clicked on front end.
+      When called in move route, it writes data to DB if necessary
     """
     expires = time.time() - (training_writer.activated + training_writer.TIMEOUT)
     training_writer.set_active()
     return json.dumps({ 'training': training_writer.active, 'expires': expires })
 
-
-  # @routes.route('/', methods=['GET'])
-  # def index():
-  #   return render_template('index.html')
-
   return routes
-
-
-
-

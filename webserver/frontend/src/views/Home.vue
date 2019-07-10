@@ -3,6 +3,7 @@
     <NavBar />
     <CarView />
     <CarStats :odometer="odometer" :sensor="sensor" :moves="moves" :created="created" :id="id" />
+    <EnableTraining :lastTrainingRecorded="lastTrainingRecorded" />
     <CarControls @move="handleMove" :commandInProgress="commandInProgress" />
   </div>
 </template>
@@ -12,6 +13,7 @@ import NavBar from '@/components/NavBar.vue';
 import CarView from '@/components/CarView.vue';
 import CarStats from '@/components/CarStats.vue';
 import CarControls from '@/components/CarControls.vue';
+import EnableTraining from '@/components/EnableTraining.vue';
 
 export default {
   name: 'home',
@@ -20,6 +22,7 @@ export default {
     CarView,
     CarStats,
     CarControls,
+    EnableTraining,
   },
   data() {
     return {
@@ -29,6 +32,7 @@ export default {
       created: null,
       id: null,
       commandInProgress: false,
+      lastTrainingRecorded: null,
     };
   },
   methods: {
@@ -41,6 +45,7 @@ export default {
         const resp = await fetch(`/move?${direction}`);
         const moveResult = await resp.json();
         if (moveResult.success === false) throw new Error('Move failed');
+        this.lastTrainingRecorded = moveResult.written_in_db ? new Date() : null;
       } catch (e) {
         console.error(`${e}\nMove failed.`);
       } finally {
@@ -55,7 +60,7 @@ export default {
 
           this.odometer = parseFloat(dataResult.odom);
           this.moves = parseFloat(dataResult.move);
-          this.sensor = parseFloat(dataResult.dist).toFixed(2);
+          this.sensor = parseFloat(dataResult.dist);
           if (!this.id) this.id = dataResult.id;
           if (!this.created) this.created = dataResult.created;
         } catch (e) {
@@ -79,7 +84,7 @@ body {
 }
 .home {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  height: 100%; grid-template-rows: auto 1fr auto;
+  height: 100%; grid-template-rows: auto .5fr .5fr auto;
   grid-gap: 10px; grid-gap: 10px 20px;
 }
 .title {
