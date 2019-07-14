@@ -55,8 +55,22 @@ class ImageDataTests(unittest.TestCase):
       self.assertEqual(actual_b64, expected_b64, 
                         'base 64 string does not equal expected string')
     
-    def test_column_histogram(self):
-      actual_histogram = self.image.column_histogram()
+    def test_histogram_with_format(self):
+      # Throws error when unexpected format passed
+      self.assertRaises(TypeError, self.image.histogram, format='jpeg')
+    
+    def test_histogram_with_lumin(self):
+      # Throws error when unexpected luminescence_threshold is invalid
+      self.assertRaises(ValueError, self.image.histogram, luminescence_threshold=1.1)
+
+    def test_histogram_with_discard_half(self):
+      # Throws error when unexpected luminescence_threshold is invalid
+      histogram = self.image.histogram(output='ImageData')
+      self.assertEqual(histogram.height, self.image.height // 2, 
+                        'histrogram height is not 1/2 of input image when discard_half is True')
+
+    def test_histogram(self):
+      actual_histogram = self.image.histogram(discard_half=False, output='numpy')
       expected_histogram = np.load('test/test_images/image_banana_color_histogram.npy')
       self.assertEqual(np.array_equal(expected_histogram, actual_histogram), True,
                         'produced histrogram did not match the expected histogram')

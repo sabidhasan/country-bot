@@ -2,6 +2,7 @@ import numpy as np
 import base64
 from io import BytesIO
 from PIL import Image
+import matplotlib.pyplot as plt
 
 class ImageData(object):
   """
@@ -13,11 +14,11 @@ class ImageData(object):
 
   @property
   def height(self):
-    return np.shape(self.image)[1]
+    return np.shape(self.image)[0]
 
   @property
   def width(self):
-    return np.shape(self.image)[0]
+    return np.shape(self.image)[1]
 
   def save_to_disk(self, file_name):
     """ Saves the image to disk at the specified path in JPEG format """
@@ -45,26 +46,44 @@ class ImageData(object):
     image.save(buffered, format="JPEG")
     return base64.b64encode(buffered.getvalue())
 
-  def column_histogram(self):
+  def histogram(self, output='numpy', luminescence_threshold=0.5, discard_half=True):
     """
-      Generates a columnar histogram; returns an array, which lists the total number of pixels
-      in each column that are considered 'bright'.
-      Brightness is measured with formula:  b = sqrt((0.241R)**2+ (0.691G)**2 + (0.0678B)**2)
+      Generates a histogram representation of the image in specified format,
+      with binary pixels that are filtered based on specified luminescence threshold.
+      The discard_half decides whether to throw out top half of image.
+
+      output: [ "numpy", "base64", "ImageData" ]
+      luminescence_threshold: <int> 0 to 1
+      discard_half: <bool>
     """
-    col_brightnesses = []
-    # Loop thru each column
-    for i in range(self.width):
-      # Get current column's pixels as an array (array contains arrays of [R,G,B] values)
-      current_column = self.image[:,i,:]
-      # determine how many pixel arrays in this column are 'bright'
-      bright_pixels_in_curr_column = 0
-      for p in current_column:
-        if self.pixel_brightness(p) > 128: bright_pixels_in_curr_column += 1
-      
-      col_brightnesses.append(bright_pixels_in_curr_column)
 
-    return np.array(col_brightnesses)
+    if output not in ['numpy', 'base64', 'ImageData']:
+      raise TypeError('unexpected output format %s' % str(output))
 
-  @staticmethod
-  def pixel_brightness(pixel):
-    return ((.241*pixel[0]**2) + (.691*pixel[1]**2) + (.068*pixel[2]**2))**.5
+    if not(0 < luminescence_threshold <= 1):
+      raise ValueError('luminescence_threshold not in range 0 to 1.')
+  
+    # Remove top half of image, if needed
+    starting_column_index = self.height // 2 if discard_half == True else 0
+    image = self.image[ starting_column_index : ]
+    # Multiply by luminescence coefficients
+    image = image * np.array([0.299, 0.587, 0.114])
+    # Sum RGBs to get total luminesence value, and normalize to 0 to 1 scale
+    image = np.sum(image, axis=2)
+    image = np.multiply(image, 1 / 256)
+    # Create array of True/False based on threshold
+    booleanized = image > luminescence_threshold
+    
+    # Make array of 0s, and fill with 1s based on booleanized above
+    zeros = np.zeros_like(image)
+    zeros[booleanized] = 1
+
+    if output == 'numpy':
+      return zeros
+    elif output == 'ImageData':
+      return ImageData(zeros)
+    else:
+      buffered = BytesIO()
+      plt.imshow(zeros)
+      plt.savefig(buffered, format='jpg')
+      return base64.b64encode(buffered.getvalue())
