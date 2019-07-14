@@ -23,6 +23,8 @@ body {
   height: 100%;
 }
 @media screen and (max-width: 500px) {
-  padding: 5px;
+  body {
+    padding: 5px;
+  }
 }
 </style>
