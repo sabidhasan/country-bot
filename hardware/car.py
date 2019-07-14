@@ -17,7 +17,7 @@ class Car(object):
     # What times move commands were issued at
     self.moves_times = []
     # Camera control 
-    self.camera = Camera(flip_vertical=True)
+    self.camera = Camera(flip_vertical=True, width=320, height=240)
   
   def get_distance_travelled(self):
     """ Returns how much distance has been travelled in total """
