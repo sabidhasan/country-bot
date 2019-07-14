@@ -12,6 +12,7 @@ RPi module cannot run on non-RPi hardware, so this entire class is faked on non-
 - To only run front end code, run `npm run serve` in the /webserver/frontend directory
 
 # Dependencies
+Install `Raspbian GNU/Linux 9 (stretch)` (Linux raspberrypi 4.14.98-v7+)
 Enable camera in raspberry pi settings:
   - `raspbian-config`
   - Install `RPi.GPIO`
@@ -22,6 +23,7 @@ Enable camera in raspberry pi settings:
 - PIL and its dependencies, which require the following on RPi
   - `sudo apt-get install libopenjp2-7`
   - `sudo apt install libtiff5`
+- `matplotlib` for generating histogram image
 - `Flask` for webserver
   - cd into `/wesberver`, run `python3 app.py`
 - `SQLAlchemy` for database management
@@ -50,19 +52,16 @@ Enable camera in raspberry pi settings:
 
 **WEB SERVER**
 - Add 404 page for front end as routing is handled there now
-- Add **table** for training data
-- Collect training data when driving (database, downloading files, etc.)
-- Prettify front end
+- Collect training data
+- Add front end for training data - show image slideshow, histogram, distance, command, etc.
 
 **ENGINE CLASS**
 - Figure out wheel radius and speed of motor (this will be voltage dependent)
 - Use PWM (default 100%) to control speed. Self Driving car can use this to control speed
 
-**LOGGING**
-- Add logging class that logs when DEV=1
-
 **CAR CLASS**
-- Make a ControllableCar class, and call that instead of Car from webserver entrypoint
+- Original self driving car - make random choice for movement, to see if 300 ms predcition time 
+  is feasible
 - Self Driving car
     - self.brain should be defined - this makes decisions on what to do
     - check for forwrd object
@@ -87,3 +86,6 @@ Enable camera in raspberry pi settings:
 --------------------
 **IMAGE CLASS** (LOW PRIORITY)
 - Image class - should return ImageData instance when converting images to b&w etc.
+**LOGGING** (LOW PRIORITY)
+- Add logging class that logs when DEV=1
+
