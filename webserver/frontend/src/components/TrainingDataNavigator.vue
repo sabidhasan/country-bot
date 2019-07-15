@@ -65,7 +65,7 @@ export default {
 }
 .trainingPoint {
   padding: 10px; display: grid; grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr repeat(4, 1.5rem);
+  grid-template-rows: auto 3fr 2fr repeat(3, 1.5rem);
 }
 .trainingPointHeader {
   text-align: center; grid-column: 1 / -1; color: var(--accent-dark); margin: 5px 0;
