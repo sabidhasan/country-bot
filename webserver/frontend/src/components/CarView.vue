@@ -1,6 +1,6 @@
 <template>
   <div class="car_view">
-    <img src="http://192.168.50.241:4000/camera" class="car_view_img" alt="A view from the front of the car" />
+    <img src="/camera" class="car_view_img" alt="A view from the front of the car" />
     </div>
 </template>
 

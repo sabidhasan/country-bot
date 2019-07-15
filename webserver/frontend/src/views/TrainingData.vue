@@ -28,15 +28,15 @@ export default {
   name: 'training_data',
   components: {
     NavBar,
-    TrainingDataNavigator
+    TrainingDataNavigator,
   },
   computed: {
     createdDate() {
       return new Date(this.created * 1000);
     },
     computedHistogram() {
-      return this.histogram ? JSON.parse(this.histogram) : []
-    }
+      return this.histogram ? JSON.parse(this.histogram) : [];
+    },
   },
   data() {
     return {
@@ -58,7 +58,7 @@ export default {
     async updateTrainingByIndex(index) {
       // fetch data point by index number
       try {
-        const rawData = await fetch(`http://192.168.50.241:4000/training?index=${index}`);
+        const rawData = await fetch(`/training?index=${index}`);
         const jsonData = await rawData.json();
         // Update the state
         Object.entries(jsonData)
@@ -71,9 +71,11 @@ export default {
   },
   async created() {
     // determine how many indices there are, if > 0, get first index
+    var count;
     try {
-      const rawCountData = await fetch('http://192.168.50.241:4000/training');
-      var { count } = await rawCountData.json();
+      const rawCountData = await fetch('/training');
+      const json = await rawCountData.json();
+      count = json.count;
     } catch(e) {
       return alert('Error connecting to car server.');
     }
@@ -83,8 +85,6 @@ export default {
     this.totalPoints = count;
     this.currIndex = 1;
   },
-  // beforeDestroy() {
-  // },
 };
 </script>
 
