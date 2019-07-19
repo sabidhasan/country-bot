@@ -39,6 +39,7 @@ Enable camera in raspberry pi settings:
 - **L298**: https://www.explainingcomputers.com/rasp_pi_robotics.html
 - **Websockets**: https://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
 - **mjpeg**: https://blog.miguelgrinberg.com/post/flask-video-streaming-revisited
+- **Training CNN on Public Images**: https://github.com/quiltdata/open-images and https://blog.quiltdata.com/how-to-classify-photos-in-600-classes-using-nine-million-open-images-3cdb989ad1c2
 
 # Notes to Self
 - if you get `picamera.exc.PiCameraMMALError: Failed to enable connection: Out of resources` when instantiating the engine, existing python processes (`ps -a`) must be killed
@@ -75,12 +76,20 @@ Enable camera in raspberry pi settings:
 
 **LEARNING**
 - Forward collision detection
-- Learning Strategy
-    - fake input data by flipping image / adding noise / brightness / contrast
-    - Haar feature-based cascade classifiers for objects (stop signs and traffic lights)
-    - OpenCV
+- Train Car to Drive
+  1. Gather training data accurately (this serves as BG for below)
+  2. Build the model using DB
+  3. Verify that it works
+- Train Car to Recognize Stop Sign
+  - Crop DL'd pos imgs to 320x320 and similar aspect ratios (ignore those that fail this criteria)
+  - Make a list of positives.txt (list of file paths)
+  - Get negative background data from above
+  - Make a list of negatives.txt (ultimately, pos will be 2x neg)
+  - Use bin/createsamples.pl (calls opencv_createsamples to put each img onto background) and
+    tools/mergevec.py (merges resultant vectors from perl script into one) from
+    https://github.com/spmallick/opencv-haar-classifier-training to make positive sample on BG
+  - Use above to train classifier using opencv_traincascade
 - Navigation?
-
 
 **LOW PRIORITY**
 --------------------
