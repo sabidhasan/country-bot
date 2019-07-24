@@ -46,26 +46,38 @@ class ImageData(object):
     image.save(buffered, format="JPEG")
     return base64.b64encode(buffered.getvalue())
 
-  def histogram(self, output='numpy', luminescence_threshold=0.5, discard_half=True):
+  def suggested_histogram_luminosity(self):
+    """ Retuns suggested luminosity for generating a histogram effective for finding roads """
+    # Calc. sum of all pixels; since histograms are only bottom 1/2, discard top half
+    pixel_sum = np.sum(self.image[ self.height // 2 : ])
+    # The sum is fitted to an empirical formula, which was calculated for 320 width x 240 height
+    # Scale sum if current img dimensions are different
+    pixel_sum *= (320 / self.width) * (240 / self.height)
+    # Determine suggested luminosity
+    return 0.9795224 - (0.8033605 / (1+((pixel_sum/17160920)**2.708226)))
+
+  def histogram(self, output='numpy', luminescence_threshold=None):
     """
       Generates a histogram representation of the image in specified format,
       with binary pixels that are filtered based on specified luminescence threshold.
-      The discard_half decides whether to throw out top half of image.
+      Throws out the top half of image, as that is not useful in making predictions.
 
       output: [ "numpy", "base64", "ImageData" ]
-      luminescence_threshold: <int> 0 to 1
-      discard_half: <bool>
+      luminescence_threshold: <int, optional> 0 to 1, automatically selected if omitted
     """
 
     if output not in ['numpy', 'base64', 'ImageData']:
       raise TypeError('unexpected output format %s' % str(output))
 
+    if luminescence_threshold is None:
+      luminescence_threshold = self.suggested_histogram_luminosity()
+      print('no lumin thresh. using %s' % str(luminescence_threshold))
+
     if not(0 < luminescence_threshold <= 1):
       raise ValueError('luminescence_threshold not in range 0 to 1.')
   
-    # Remove top half of image, if needed
-    starting_column_index = self.height // 2 if discard_half == True else 0
-    image = self.image[ starting_column_index : ]
+    # Remove top half of image
+    image = self.image[ self.height // 2 : ]
     # Multiply by luminescence coefficients
     image = image * np.array([0.299, 0.587, 0.114])
     # Sum RGBs to get total luminesence value, and normalize to 0 to 1 scale

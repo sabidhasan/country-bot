@@ -1,5 +1,5 @@
 # Run Tests
-Run tests by
+Run Python tests:
 ```
 python -m unittest discover
 ```
@@ -55,10 +55,13 @@ Enable camera in raspberry pi settings:
 - Add 404 page for front end as routing is handled there now
 - Collect training data
 - Add front end for training data - show image slideshow, histogram, distance, command, etc.
+- Write tests for project
 
 **ENGINE CLASS**
 - Figure out wheel radius and speed of motor (this will be voltage dependent)
 - Use PWM (default 100%) to control speed. Self Driving car can use this to control speed
+- Create a thread that continuously updates the US distance in main class, and the get_distance
+  method just grabs the latest data.
 
 **CAR CLASS**
 - Original self driving car - make random choice for movement, to see if 300 ms predcition time 
@@ -74,22 +77,34 @@ Enable camera in raspberry pi settings:
 **CAMERA**
 - Write more tests for Camera class
 
+**IMAGE CLASS**
+- Write tests for ImageData for suggested luminosity
+
 **LEARNING**
 - Forward collision detection
 - Train Car to Drive
-  1. Gather training data accurately (this serves as BG for below)
-  2. Build the model using DB
-  3. Verify that it works
+  1. Gather training data accurately (this serves as BG for below) - need ~800 points
+     Curvy runs             0001-0274
+     Straight runs          
+     Intersections          
+     Circles                0275-0451
+  2. Flip images from above to get more data
+  3. Augment the images (add blur, noise, contrast, etc.)
+  4. Build the model using DB - try 1 hidden layer with 32 or 64 nodes
+  5. Verify that it works
 - Train Car to Recognize Stop Sign
-  - Crop DL'd pos imgs to 320x320 and similar aspect ratios (ignore those that fail this criteria)
+  - Remove DL'd pos imgs that are obviously irrelevant
+  - Remove DL's pos imgs with messed up aspect ratios
+  - Crop DL'd pos imgs to 320x320
+  - Grayscale DL'd pos imgs
   - Make a list of positives.txt (list of file paths)
-  - Get negative background data from above
-  - Make a list of negatives.txt (ultimately, pos will be 2x neg)
+  - Make a list of negatives.txt (pos will be 2x neg)
   - Use bin/createsamples.pl (calls opencv_createsamples to put each img onto background) and
     tools/mergevec.py (merges resultant vectors from perl script into one) from
     https://github.com/spmallick/opencv-haar-classifier-training to make positive sample on BG
+    Also see https://pythonprogramming.net/haar-cascade-object-detection-python-opencv-tutorial/
   - Use above to train classifier using opencv_traincascade
-- Navigation?
+- Navigation? Speed detection?
 
 **LOW PRIORITY**
 --------------------
