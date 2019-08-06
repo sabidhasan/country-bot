@@ -26,6 +26,7 @@ Enable camera in raspberry pi settings:
 - `matplotlib` for generating histogram image
 - `Flask` for webserver
   - cd into `/wesberver`, run `python3 app.py`
+  - access the webserver running on the car through the network IP address of the Pi
 - `SQLAlchemy` for database management
 - `VueCLI` for front end and `npm` package manager and `NodeJS`
   - Build front end by cd into `/webserver/frontend`
@@ -77,17 +78,15 @@ Enable camera in raspberry pi settings:
 **CAMERA**
 - Write more tests for Camera class
 
-**IMAGE CLASS**
-- Write tests for ImageData for suggested luminosity
-
 **LEARNING**
 - Forward collision detection
 - Train Car to Drive
   1. Gather training data accurately (this serves as BG for below) - need ~800 points
      Curvy runs             0001-0274
      Straight runs          
-     Intersections          
-     Circles                0275-0451
+     L turns
+     Intersections          0457-0564
+     Circles                0275-0456
   2. Flip images from above to get more data
   3. Augment the images (add blur, noise, contrast, etc.)
   4. Build the model using DB - try 1 hidden layer with 32 or 64 nodes
