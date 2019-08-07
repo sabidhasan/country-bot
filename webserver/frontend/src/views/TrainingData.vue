@@ -12,6 +12,7 @@
       :index="currIndex"
       :created="createdDate"
       :image="image_jpeg"
+      :suggested_luminosity="suggested_luminosity"
       :histogram="computedHistogram"
       :command="move"
       :moves="moves"
@@ -44,6 +45,7 @@ export default {
       image_height: 0,
       index: null,
       count: 0,
+      suggested_luminosity: null,
       histogram: null,
       image_width: 0,
       ultrasonic: 0,

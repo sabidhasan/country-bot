@@ -33,3 +33,7 @@ instance/
 .eslintrc.js
 package-lock.json
 *node_modules*
+
+learning/*/Google Photo CSVs/*.csv
+learning/*/*/*.jpg
+*trainingdata.db

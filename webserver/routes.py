@@ -5,6 +5,13 @@ from flask import Blueprint, request, abort, render_template, Response, jsonify
 from training_writer import TrainingWriter
 from models import Training
 
+
+
+
+
+import numpy as np 
+
+
 def routes_blueprint_creator(car):
   """
     Sets up a blueprint for importing routes. car is an instance of the Car object
@@ -121,7 +128,7 @@ def routes_blueprint_creator(car):
       else:
         move_names = { 0: 'F', 1: 'R', 2: 'L' }
         image = tr_pnt.image_data
-
+        print("The sum is %s "  % np.sum(image.image))
         training_data = {
           'count': count,
           'index': tr_pnt.index,
@@ -129,18 +136,29 @@ def routes_blueprint_creator(car):
           'image_jpeg': str(image.tobase64())[2:-1],
           'image_height': image.height,
           'image_width': image.width,
-          'histogram': json.dumps(image.histogram(luminescence_threshold=0.6,output='numpy').tolist()),
+          'suggested_luminosity': image.suggested_histogram_luminosity(),
+          'histogram': json.dumps(image.histogram(output='numpy').tolist()),
           'ultrasonic': tr_pnt.ultrasonic,
           'move': move_names[[tr_pnt.cmd_forward, tr_pnt.cmd_right, tr_pnt.cmd_left].index(1)],
           'moves': tr_pnt.moves
         }
 
       if request.args.get('full', None) == 'true':
-        histogram_b64 = image.histogram(luminescence_threshold=0.6,output='base64')
+        histogram_b64 = image.histogram(output='base64')
         # Convert bytes object to string and remove b" string at beginning, and " @ end
         training_data['histogram_jpeg'] = str(histogram_b64)[2:-1]
       response = jsonify(training_data)
       response.headers.add('Access-Control-Allow-Origin', '*')
       return response
+
+
+  @routes.route('/selfdrive')
+  def selfdrive():
+    import threading
+
+    thread1 = threading.Thread(target=car.self_drive)
+    thread1.start()
+
+    return "starting self driving"
 
   return routes
