@@ -1,6 +1,7 @@
 <template>
   <div class="histogram">
     <canvas ref='canvas'></canvas>
+    <label>{{ label }}</label>
   </div>
 </template>
 
@@ -9,6 +10,7 @@ export default {
   name: 'Histogram',
   props: {
     data: { type: Array, required: true },
+    label: { type: String, required: true },
   },
   data() {
     return {
@@ -23,7 +25,7 @@ export default {
 
       const ctx = canvas.getContext('2d');
       const colors = {
-        0: '#ff0000', 1: '#00ffff',
+        0: '#a33327', 1: '#ad8173',
       };
 
       for (const [i, row] of Object.entries(data)) {
@@ -48,5 +50,6 @@ export default {
 <style>
 .histogram {
   grid-column: 1 / -1; display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
 }
 </style>

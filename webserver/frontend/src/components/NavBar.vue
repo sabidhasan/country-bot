@@ -3,7 +3,7 @@
     <h1>CountryBot</h1>
     <nav>
       <router-link to="/" class="nav_item">Drive Car</router-link>
-      <router-link to="/training_data" class="nav_item">Train Car</router-link>
+      <router-link to="/training_data" class="nav_item">Training Data</router-link>
       <router-link to="/" class="nav_item">Self Drive</router-link>
     </nav>
   </div>
