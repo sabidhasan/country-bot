@@ -71,7 +71,6 @@ class ImageData(object):
 
     if luminescence_threshold is None:
       luminescence_threshold = self.suggested_histogram_luminosity()
-      print('no lumin thresh. using %s' % str(luminescence_threshold))
 
     if not(0 < luminescence_threshold <= 1):
       raise ValueError('luminescence_threshold not in range 0 to 1.')
