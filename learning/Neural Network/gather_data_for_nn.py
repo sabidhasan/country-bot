@@ -215,11 +215,16 @@ def transform_brightened_img_and_save(pil_image, idx, label):
 
 
 class TrainingData():
-  """ Augments raw training data from car into data that can be used for training """
+  """
+    Augments raw training data from car into data that can be used for training
+    both Haar (Stopsign detection) and CNN (Self driving) algorithms
+  """
+  
   IMAGE_DIR = "Augmented Images"
+  DEFAULT_PATH = "../../webserver/trainingdata.db"
 
   def __init__(self, path=None):
-    self.db_path = path if path else "../../webserver/trainingdata.db"
+    self.db_path = path if path else self.DEFAULT_PATH
 
     print("[TRAINING_DATA] Using path '%s' for database" % self.db_path)
     self.raw_data = self.read_db()
@@ -243,8 +248,10 @@ class TrainingData():
   def parse_and_augment_data(self):
     """ Parses data from self.raw_data into usable data, while augmenting """
 
+    if len(self.raw_data == 0):
+      print("[TRAINING_DATA] No training data exists. The database may be empty.")
+      
     ret = []
-
     # Loop through data, and add label and histogram
     for idx, row in enumerate(self.raw_data):
       row_idx = row[0]
