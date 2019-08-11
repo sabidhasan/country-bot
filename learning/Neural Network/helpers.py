@@ -55,7 +55,7 @@ def get_saved_data_from_row(row):
     return (saved_pil_image, label)
 
 
-def transform_and_save_img(pil_image, transform_class, directory, idx, label, save_histogram=True):
+def transform_and_save_img(pil_image, transform_class, directory, idx, label, save_histogram):
   """
     Applies transformation to PIL image, and saves transformed image and histogram to disk
   """
@@ -69,7 +69,7 @@ def transform_and_save_img(pil_image, transform_class, directory, idx, label, sa
 
   # Transform pil_image into transformed image
   transformed_pil = transformer.transform(pil_image)
-  transformed_image_data = image_data.ImageData(np.array(pil_image))
+  transformed_image_data = image_data.ImageData(np.array(transformed_pil))
 
   # Save transformed image and histogram to disk
   transformed_pil.save(image_path_to_save)
@@ -77,13 +77,12 @@ def transform_and_save_img(pil_image, transform_class, directory, idx, label, sa
   if save_histogram == True:
     save_imagedata_histogram(transformed_image_data, histogram_path_to_save)
   
-
   # Get flattened histogram
-  original_histogram = transformed_image_data.histogram().flatten()
+  histogram = transformed_image_data.histogram().flatten()
 
   # Build return object
   ret = {
-    "index": idx, "label": actual_label, "histogram": original_histogram, 
+    "index": idx, "label": actual_label, "histogram": histogram, 
     "img_file": image_path_to_save, "hist_file": histogram_path_to_save,
     "filter": transformer.FILE_INFIX
   }
@@ -97,10 +96,10 @@ def save_augmented_data(data_to_save, path):
   for data_pt in data_to_save:
     # Keep only essential data points
     curr_data = {
-      "flt": data_pt["filter"],
-      "idx": data_pt["index"],
-      "lbl": data_pt["label"],
-      "his": data_pt["histogram"].tolist()
+      "filter": data_pt["filter"],
+      "index": data_pt["index"],
+      "label": data_pt["label"],
+      "histogram": data_pt["histogram"]
     }
 
     to_save.append(curr_data)
