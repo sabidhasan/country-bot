@@ -39,8 +39,6 @@ class TransformOriginal(Transform):
 
   def transform(self, pil_image):
     """ Does actual transformation of image (which is nothing) """
-    # img_data_image = image_data.ImageData(np.array(pil_image))
-    # return (img_data_image, pil_image)
     return pil_image
 
 
@@ -56,10 +54,7 @@ class TransformFlip(Transform):
   def transform(self, pil_image):
     """ Does actual transformation of image (which is flip horizontally) """
     flipped_pil_image = pil_image.transpose(Image.FLIP_LEFT_RIGHT)
-    # flipped_img_data_image = image_data.ImageData(np.array(flipped_pil_image))
-    # return (flipped_img_data_image, flipped_pil_image)
     return flipped_pil_image
-
 
   def get_transformed_label(self, original_label):
     return self.FLIPPED_DIRS[original_label]
@@ -77,9 +72,27 @@ class TransformBlur(Transform):
   def transform(self, pil_image):
     """ Does actual transformation of image (add blur) """
     blurred_pil_image = pil_image.filter(ImageFilter.GaussianBlur(radius=self.BLUR_RADIUS))
-    # blurred_img_data_image = image_data.ImageData(np.array(blurred_pil_image))
-    # return (blurred_img_data_image, blurred_pil_image)
     return blurred_pil_image
+
+
+class TransformBlurFlip(Transform):
+  """ Flips image horizontally and blurs """
+  
+  @property
+  def FILE_INFIX(self):
+    return "L"
+
+  FLIPPED_DIRS = { 'R': 'L', 'L': 'R', 'F': 'F' }
+  BLUR_RADIUS = 1.5
+
+  def transform(self, pil_image):
+    """ Does actual transformation of image (which is flip horizontally) """
+    flipped_pil_image = pil_image.transpose(Image.FLIP_LEFT_RIGHT)
+    blurred_pil_image = flipped_pil_image.filter(ImageFilter.GaussianBlur(radius=self.BLUR_RADIUS))
+    return blurred_pil_image
+
+  def get_transformed_label(self, original_label):
+    return self.FLIPPED_DIRS[original_label]
 
 
 class TransformSharpen(Transform):
@@ -92,9 +105,26 @@ class TransformSharpen(Transform):
   def transform(self, pil_image):
     """ Does actual transformation of image (apply unsharpmask) """
     sharpened_pil_image = pil_image.filter(ImageFilter.UnsharpMask)
-    # sharpened_img_data_image = image_data.ImageData(np.array(sharpened_pil_image))
-    # return (sharpened_img_data_image, sharpened_pil_image)
     return sharpened_pil_image
+
+
+class TransformSharpenFlip(Transform):
+  """ Flips image horizontally and sharpens """
+  
+  @property
+  def FILE_INFIX(self):
+    return "H"
+
+  FLIPPED_DIRS = { 'R': 'L', 'L': 'R', 'F': 'F' }
+
+  def transform(self, pil_image):
+    """ Does actual transformation of image (which is flip horizontally) """
+    flipped_pil_image = pil_image.transpose(Image.FLIP_LEFT_RIGHT)
+    flipped_pil_image = flipped_pil_image.filter(ImageFilter.UnsharpMask)
+    return flipped_pil_image
+
+  def get_transformed_label(self, original_label):
+    return self.FLIPPED_DIRS[original_label]
 
 
 class TransformBrighten(Transform):
@@ -108,7 +138,25 @@ class TransformBrighten(Transform):
     """ Does actual transformation of image (blur image) """
     brightness_factor = random.choice([0.5, 1.5])
 
+    brightened_pil_image = ImageEnhance.Brightness(pil_image).enhance(brightness_factor)
+    return brightened_pil_image
+
+
+class TransformBrightenFlip(Transform):
+  """ Flips image horizontally and sharpens """
+  
+  @property
+  def FILE_INFIX(self):
+    return "G"
+
+  FLIPPED_DIRS = { 'R': 'L', 'L': 'R', 'F': 'F' }
+
+  def transform(self, pil_image):
+    """ Does actual transformation of image (which is flip horizontally) """
+    brightness_factor = random.choice([0.5, 1.5])
     blurred_pil_image = ImageEnhance.Brightness(pil_image).enhance(brightness_factor)
-    # blurred_img_data_image = image_data.ImageData(np.array(blurred_pil_image))
-    # return (blurred_img_data_image, blurred_pil_image)
-    return blurred_pil_image
+    flipped_pil_image = blurred_pil_image.transpose(Image.FLIP_LEFT_RIGHT)
+    return flipped_pil_image
+
+  def get_transformed_label(self, original_label):
+    return self.FLIPPED_DIRS[original_label]

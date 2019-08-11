@@ -17,7 +17,8 @@ import time
 import os
 
 from helpers import read_sqlite_db, get_saved_data_from_row, transform_and_save_img, save_augmented_data
-from transformers import TransformOriginal, TransformFlip, TransformBlur, TransformSharpen, TransformBrighten
+from transformers import TransformOriginal, TransformFlip, TransformBlur, TransformSharpen, \
+  TransformBrighten, TransformBlurFlip, TransformSharpenFlip, TransformBrightenFlip
 
 # Allow importing image data class from parent directory
 import sys
