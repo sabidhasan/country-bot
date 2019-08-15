@@ -21,6 +21,15 @@ def get_activated_pin_ids_from_calls(call_args_list):
   # Map only first argument - this is the pin that was activated
   return list(map(lambda x: x[0], activated_pins))
 
+
+def get_all_pin_ids_from_calls(call_args_list):
+  """
+    Gets a list all calls from the Patch object, and converts them to a list of IDs generated
+  """
+  # Map extracts tuples of arguments for each call, from 'calls' object
+  return list(set(map(lambda x: x[0][0], call_args_list)))
+
+
 def get_mocked_camera_input():
   """ Loads raw camera numpy array for testing purposes """
   # The np.save function doens't play nicely with 3D arrays, so we stored it 
