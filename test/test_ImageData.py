@@ -14,6 +14,7 @@ class ImageDataTests(unittest.TestCase):
       raw_camera_data = get_mocked_camera_input()
       self.image = ImageData(raw_camera_data)
 
+
     def tearDown(self):
       for filename in ['test/test_images/test_color.jpg', 'test/test_images/test_desaturated.jpg']:
         try:
@@ -22,14 +23,17 @@ class ImageDataTests(unittest.TestCase):
           # Test must have failed, so no file was created
           continue
 
+
     # Test width and height attributes
     def test_height(self):
       self.assertEqual(self.image.height, 256,
                         'height does not equal expected value')
 
+
     def test_width(self):
       self.assertEqual(self.image.width, 256,
                         'width does not equal expected value')
+
 
     def test_save_to_disk(self):
       with open('test/test_images/image_banana_color.jpg', 'rb') as f:
@@ -40,6 +44,7 @@ class ImageDataTests(unittest.TestCase):
       self.assertEqual(expected_color_image, actual_color_image,
                         'saved image does not match expected image')
 
+
     def test_desaturate(self):
       with open('test/test_images/image_banana_bw.jpg', 'rb') as f:
         expected_bw_image = f.read()
@@ -49,6 +54,7 @@ class ImageDataTests(unittest.TestCase):
       self.assertEqual(expected_bw_image, actual_bw_image,
                         'after desaturation, the image does not match expected value')
 
+
     def test_base64(self):
       with open('test/test_images/image_banana_b64.bin', 'rb') as f:
         expected_b64 = f.read()
@@ -56,6 +62,7 @@ class ImageDataTests(unittest.TestCase):
       self.assertEqual(actual_b64, expected_b64, 
                         'base 64 string does not equal expected string')
     
+
     def test_suggested_histogram_luminosity(self):
       # Suggests correct histogram luminosity (based on bottom half of the image)
       mocked_camera_input = get_mocked_camera_input()
@@ -69,13 +76,16 @@ class ImageDataTests(unittest.TestCase):
       self.assertEqual(expected_luminosity, actual_luminosity,
                           'expected luminosity does not equal calculated luminosity')
 
+ 
     def test_histogram_with_format(self):
       # Throws error when unexpected format passed
       self.assertRaises(TypeError, self.image.histogram, format='jpeg')
-    
+
+
     def test_histogram_with_lumin(self):
       # Throws error when unexpected luminescence_threshold is invalid
       self.assertRaises(ValueError, self.image.histogram, luminescence_threshold=1.1)
+
 
     def test_histogram(self):
       # Tests if produced histogram matches expected value

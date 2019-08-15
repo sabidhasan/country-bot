@@ -16,16 +16,20 @@ class CameraTests(unittest.TestCase):
   def tearDown(self):
     Camera.camera = None
 
+
   def test_frame(self):
     camera = Camera()
     self.assertEqual(camera.frame, None, 'frame is defined before data acquired')
+
 
   # Invalid resolution raises error
   def test_invalid_resolution(self):
     self.assertRaises(ValueError, Camera, width = 22, height = 22)
 
+
   # Test resolution
   def test_resolution(self):
     camera = Camera(width=999, height=999)
     self.assertEqual(camera.width, 999)
+    self.assertEqual(camera.height, 999)
 
